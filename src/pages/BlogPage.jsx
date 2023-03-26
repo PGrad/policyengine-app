@@ -110,60 +110,72 @@ function SocialMediaIcons(props) {
   const url = encodeURIComponent(window.location.href);
 
   const twitter = (
-  <a href={`https://twitter.com/intent/tweet?url=${url}&text=${props}`} target="_blank" rel="noreferrer">
-    <TwitterOutlined style={{ fontSize: 25 }} />
-  </a>
-);
+    <a
+      href={`https://twitter.com/intent/tweet?url=${url}&text=${props}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <TwitterOutlined style={{ fontSize: 25 }} />
+    </a>
+  );
   const facebook = (
-    <a href={`https://www.facebook.com/sharer/sharer.php?u=${url}`} target="_blank" rel="noreferrer">
+    <a
+      href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
+      target="_blank"
+      rel="noreferrer"
+    >
       <FacebookFilled style={{ fontSize: 25 }} />
     </a>
   );
   const linkedIn = (
-    <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${(url)}`} target="_blank" rel="noreferrer">
+    <a
+      href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}
+      target="_blank"
+      rel="noreferrer"
+    >
       <LinkedinFilled style={{ fontSize: 25 }} />
     </a>
   );
   return (
-    <div 
-      style={{ 
-        position: "fixed", 
-        right: "30px", 
-        bottom: "30px", 
-        display: "flex", 
+    <section
+      style={{
+        position: "fixed",
+        right: "30px",
+        bottom: "30px",
+        display: "flex",
         flexDirection: "column",
       }}
     >
-      <div 
-        style={{ 
-          border: "1px solid #ccc", 
-          borderRadius: "0px", 
-          padding: "8px", 
-          marginBottom: "-1px", 
-        }}
-      >
-      {twitter}
-      </div>
-      <div 
-        style={{ 
-          border: "1px solid #ccc", 
-          borderRadius: "0px", 
-          padding: "8px", 
+      <div
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: "0px",
+          padding: "8px",
           marginBottom: "-1px",
         }}
       >
-      {facebook}
+        {twitter}
       </div>
-      <div 
-        style={{ 
-          border: "1px solid #ccc", 
-          borderRadius: "0px", 
+      <div
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: "0px",
+          padding: "8px",
+          marginBottom: "-1px",
+        }}
+      >
+        {facebook}
+      </div>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: "0px",
           padding: "8px",
         }}
       >
-      {linkedIn}
+        {linkedIn}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -232,20 +244,25 @@ function LeftContents(props) {
     const headerText = headerTexts[i];
     const startY = headerStartYs[i];
     const isSelected = currentHeaderSlug === headerSlugs[i];
+    const handleClick = () => {
+      window.scrollTo({ top: startY - 100, behavior: "smooth" });
+    };
     contents.push(
-      <p
+      <li
+        key={i}
         style={{
           fontSize: 16 - 2 * (headerLevel - 2),
           cursor: "pointer",
           margin: 5,
           paddingLeft: 10 * (headerLevel - 2),
+          listStyle: "none",
         }}
-        onClick={() => {
-          window.scrollTo({ top: startY - 100, behavior: "smooth" });
-        }}
+        onClick={handleClick}
+        onKeyDown={handleClick}
+        aria-hidden
       >
         {isSelected && <>&#8594;</>} {headerText}
-      </p>
+      </li>
     );
   }
 
@@ -254,12 +271,12 @@ function LeftContents(props) {
   }
 
   return (
-    <div style={{ position: "fixed", top: 300, left: 20, maxWidth: 300 }}>
+    <aside style={{ position: "fixed", top: 300, left: 20, maxWidth: 300 }}>
       <h5 style={{ marginBottom: 20 }}>
         <b>Contents</b>
       </h5>
-      {contents}
-    </div>
+      <menu style={{ paddingLeft: 0 }}>{contents}</menu>
+    </aside>
   );
 }
 
@@ -299,7 +316,7 @@ export default function BlogPostPage(props) {
       {!mobile && <LeftContents markdown={markdown} />}
       {!mobile && SocialMediaIcons(title)}
       <Container style={{ padding: mobile && 0 }} className="serif">
-        <div
+        <main
           style={{
             margin: mobile ? 0 : 75,
             marginTop: mobile ? 20 : 75,
@@ -307,10 +324,10 @@ export default function BlogPostPage(props) {
             marginRight: mobile ? 0 : 250,
           }}
         >
-          <div style={{ padding: mobile && 20 }}>
+          <section style={{ padding: mobile && 20 }}>
             <h1>{title}</h1>
             <h5 style={{ fontFamily: "Merriweather" }}>{description}</h5>
-          </div>
+          </section>
           <img
             src={imageSrc}
             style={{
@@ -323,7 +340,7 @@ export default function BlogPostPage(props) {
             }}
             alt="Background"
           />
-          <div style={{ padding: mobile && 20 }}>
+          <article style={{ padding: mobile && 20 }}>
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}
@@ -350,7 +367,7 @@ export default function BlogPostPage(props) {
                   </div>
                 ),
                 iframe: ({ src, width, height }) => (
-                  <div
+                  <section
                     style={{
                       display: "flex",
                       justifyContent: "center",
@@ -368,7 +385,7 @@ export default function BlogPostPage(props) {
                         height: height,
                       }}
                     />
-                  </div>
+                  </section>
                 ),
                 strong: ({ children }) => <b>{children}</b>,
                 a: ({ href, children }) => (
@@ -416,7 +433,7 @@ export default function BlogPostPage(props) {
             >
               {markdown}
             </ReactMarkdown>
-            <div
+            <section
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -426,9 +443,9 @@ export default function BlogPostPage(props) {
               {authors.map((author, idx) => (
                 <AuthorSection key={idx} author={authorsJson[author]} />
               ))}
-            </div>
-          </div>
-        </div>
+            </section>
+          </article>
+        </main>
       </Container>
     </>
   );
