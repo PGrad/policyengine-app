@@ -1,5 +1,5 @@
-import { Switch } from "antd";
 import { useState } from "react";
+import { Radio } from 'antd';
 import Plot from "react-plotly.js";
 import { ChartLogo } from "../../../../api/charts";
 import { capitalize } from "../../../../api/language";
@@ -25,14 +25,28 @@ export default function BaselineAndReformChart(props) {
     policy
   } = props;
   const [showDelta, setShowDelta] = useState(false);
+  const options = [
+    {
+      label: 'Baseline and reform',
+      value: false,
+    },
+    {
+      label: 'Difference',
+      value: true,
+    },
+  ];
+  const onDelta = ({ target: { value } }) => {
+    console.log('checked', value);
+    setShowDelta(value);
+  };
   const toggle = (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <span style={{ marginRight: 10 }}>Show baseline and reform</span>
-      <Switch
-        checked={showDelta}
-        onChange={(checked) => setShowDelta(checked)}
+      <Radio.Group
+        options={options}
+        onChange={onDelta}
+        value={showDelta}
+        buttonStyle="solid"
       />
-      <span style={{ marginLeft: 10 }}>Show difference</span>
     </div>
   );
   const earningsArray = getValueFromHousehold(
@@ -213,6 +227,9 @@ function BaselineAndReformTogetherChart(props) {
           })
         }
       }}
+      onUnhover={() => {
+        setHoverCard(null);
+      }}
     />
   );
 
@@ -291,6 +308,7 @@ function BaselineReformDeltaChart(props) {
       }}
       style={{
         width: "100%",
+        marginTop: "3rem"
       }}
       onHover={(data) => {
         if (data.points[0].x !== undefined && data.points[0].y !== undefined) {
@@ -302,6 +320,9 @@ function BaselineReformDeltaChart(props) {
             body: message,
           });
         }
+      }}
+      onUnhover={() => {
+        setHoverCard(null);
       }}
     />
   );
